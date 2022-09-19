@@ -1,8 +1,7 @@
 import path from 'path';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
-import webpack, { Configuration as WebpackConfiguration } from 'webpack';
-import { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import webpack, { Configuration as WebpackConfiguration } from "webpack";
+import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
 
 interface Configuration extends WebpackConfiguration {
   devServer?: WebpackDevServerConfiguration;
@@ -10,16 +9,15 @@ interface Configuration extends WebpackConfiguration {
 
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 
-const isDevelopment = process.env.NODE_ENV !== 'production'; //개발용
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const config: Configuration = {
   name: 'sleact',
-  mode: isDevelopment ? 'development' : 'production', //프로덕션과 개발을 나눌 수 있음.
+  mode: isDevelopment ? 'development' : 'production',
   devtool: !isDevelopment ? 'hidden-source-map' : 'eval',
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'], //바벨이 처리할 확장자목록
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     alias: {
-      //경로설정은 tsconfig와 webpack둘다 해줘야함
       '@hooks': path.resolve(__dirname, 'hooks'),
       '@components': path.resolve(__dirname, 'components'),
       '@layouts': path.resolve(__dirname, 'layouts'),
@@ -39,9 +37,9 @@ const config: Configuration = {
         options: {
           presets: [
             [
-              '@babel/preset-env', //브라우저 설정 어떤 브라우저에 맞출 것인지?
+              '@babel/preset-env',
               {
-                targets: { browsers: ['last 2 chrome versions', 'IE 10'] },
+                targets: { browsers: ['IE 10'] },
                 debug: isDevelopment,
               },
             ],
@@ -57,7 +55,6 @@ const config: Configuration = {
         exclude: path.join(__dirname, 'node_modules'),
       },
       {
-        //바벨이 css도 변환시켜줌 그래서 ts가 js로 바로 안가고 웹팩 바벨을 거침
         test: /\.css?$/,
         use: ['style-loader', 'css-loader'],
       },
@@ -70,10 +67,9 @@ const config: Configuration = {
       //   files: "./src/**/*",
       // },
     }),
-    new webpack.EnvironmentPlugin({ NODE_ENV: isDevelopment ? 'development' : 'production' }), //node 런타임 중 필요한 환경변수를 프론트에서 접근가능하게함
+    new webpack.EnvironmentPlugin({ NODE_ENV: isDevelopment ? 'development' : 'production' }),
   ],
   output: {
-    //변환된 결과물
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
     publicPath: '/dist/',
@@ -83,25 +79,14 @@ const config: Configuration = {
     port: 3090,
     devMiddleware: { publicPath: '/dist/' },
     static: { directory: path.resolve(__dirname) },
-    proxy: {
-      '/api/': {
-        target: 'http://localhost:3095',
-        changeOrigin: true,
-      },
-    },
   },
 };
-
-//개발과 배포 환경 분리
 
 if (isDevelopment && config.plugins) {
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
   config.plugins.push(new ReactRefreshWebpackPlugin());
-  config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'server', openAnalyzer: true }));
 }
 if (!isDevelopment && config.plugins) {
-  config.plugins.push(new webpack.LoaderOptionsPlugin({ minimize: true }));
-  config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'static' }));
 }
 
 export default config;
