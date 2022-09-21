@@ -58,7 +58,7 @@ const SignUp = () => {
 
   const onSubmit = useCallback(
     (e) => {
-      e.preventDefault();
+      e.preventDefault(); //디폴트 실행 방지
       if (!mismatchError && nickname) {
         console.log('서버로 회원가입하기');
         setSignUpError(''); //로딩단계
