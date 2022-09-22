@@ -8,12 +8,14 @@ import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } fro
 import { Link, Redirect } from 'react-router-dom';
 import useInput from '../../hooks/useInput';
 import axios from 'axios';
+import fetcher from '../..//utils/fetcher';
+import useSWR from 'swr';
 
 const SignUp = () => {
   // const { isLoading, isSuccess, status, isError, data, error } = useQuery('user', () =>
   //   fetcher({ queryKey: '/api/users' }),
   // );
-
+  const { data, error } = useSWR('http://localhost:3095/api/users', fetcher);
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
   const [password, , setPassword] = useInput('');
@@ -93,6 +95,10 @@ const SignUp = () => {
   // if (data) {
   //   return <Redirect to="/workspace/sleact/channel/일반" />;
   // }
+
+  if (data) {
+    return <Redirect to="/workspace/sleact/channel/일반" />;
+  }
 
   return (
     <div id="container">

@@ -1,11 +1,13 @@
 import React from 'react';
 import Workspace from '../Workspace/index';
+import { Container } from './styles';
+import { Header } from './styles';
 
 const Channel = () => {
   return (
-    <Workspace>
-      <div>로그인하신 것을 축하드려요!</div>
-    </Workspace>
+    <Container>
+      <Header>챼널@</Header>
+    </Container>
   );
 };
 
